@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+  <title>麒麟送子网</title>
+
+  <!-- Bootstrap -->
+  <link href="__ADMIN__css/bootstrap.min.css" rel="stylesheet">
+  <link href="__ADMIN__css/main.css" rel="stylesheet">
+
+  <!--[if lt IE 9]>
+      <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+    <![endif]-->
+</head>
+
+<body>
+  <div class="main">
+    {include file="public/left" /}
+    <div class="main-container">
+      {include file="public/top" /}
+      <div class="container-fluid">
+        <div class="tabel-bar">
+          <form class="navbar-form navbar-left">
+            <div class="form-group">
+              <input type="text" class="form-control" placeholder="ID/账号/昵称">
+            </div>
+            <button type="button" id="search" class="btn btn-info">搜索</button>
+            <button type="button" id="add" class="btn btn-info" data-toggle="modal" data-target="#addModal">添加</button>
+          </form>
+        </div>
+        <!-- 添加管理员 -->
+        <div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="addModalLabel">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="addModalLabel">添加管理员</h4>
+              </div>
+              <div class="modal-body">
+                <form class="form-horizontal">
+                  <div class="form-group">
+                    <label for="username" class="col-sm-3 control-label">账号</label>
+                    <div class="col-sm-8">
+                      <input type="text" class="form-control" id="username" placeholder="账号">
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label for="nickname" class="col-sm-3 control-label">昵称</label>
+                    <div class="col-sm-8">
+                      <input type="text" class="form-control" id="nickname" placeholder="昵称">
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label for="password" class="col-sm-3 control-label">密码</label>
+                    <div class="col-sm-8">
+                      <input type="password" class="form-control" id="password" placeholder="密码">
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label for="repassword" class="col-sm-3 control-label">再次输入密码</label>
+                    <div class="col-sm-8">
+                      <input type="password" class="form-control" id="repassword" placeholder="再次输入密码">
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label class="col-sm-3 control-label">状态</label>
+                    <div class="col-sm-8">
+                      <select class="form-control">
+                        <option value="1" selected>启用</option>
+                        <option value="2">禁用</option>
+                      </select>
+                    </div>
+                  </div>
+                </form>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                <button type="button" id="addAdmin" class="btn btn-primary">添加</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- 修改管理员 -->
+        <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="editModalLabel">修改管理员</h4>
+              </div>
+              <div class="modal-body">
+                <form class="form-horizontal">
+                  <div class="form-group">
+                    <label for="username02" class="col-sm-3 control-label">账号</label>
+                    <div class="col-sm-8">
+                      <input type="text" class="form-control" id="username02" value="admin" readonly>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label for="nickname02" class="col-sm-3 control-label">昵称</label>
+                    <div class="col-sm-8">
+                      <input type="text" class="form-control" id="nickname02" placeholder="昵称">
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label for="password02" class="col-sm-3 control-label">密码</label>
+                    <div class="col-sm-8">
+                      <input type="password" class="form-control" id="password02" placeholder="密码如不修改，请不要填写！">
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label for="repassword02" class="col-sm-3 control-label">再次输入密码</label>
+                    <div class="col-sm-8">
+                      <input type="password" class="form-control" id="repassword02" placeholder="密码入不修改，请不要填写！">
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label class="col-sm-3 control-label">状态</label>
+                    <div class="col-sm-8">
+                      <select class="form-control">
+                        <option value="1" selected>启用</option>
+                        <option value="2">禁用</option>
+                      </select>
+                    </div>
+                  </div>
+                  <p class="text-danger text-center" style="padding-top:10px;">两次输入的密码不一致</p>
+                </form>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                <button type="button" id="editAdmin" class="btn btn-primary">修改</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="table-responsive text-center">
+          <table class="table table-bordered table-hover">
+            <thead>
+              <tr class="active">
+                <th class="text-center">ID</th>
+                <th class="text-center">账号</th>
+                <th class="text-center">昵称</th>
+                <th class="text-center">最后登录IP</th>
+                <th class="text-center">最后登录时间</th>
+                <th class="text-center">登录次数</th>
+                <th class="text-center">状态</th>
+                <th class="text-center" width="170">操作</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>1</td>
+                <td>admin</td>
+                <td>管理员</td>
+                <td>127.0.0.1</td>
+                <td>2019.4.8 13:45:00</td>
+                <td>120</td>
+                <td>
+                  <p class="text-success">启用</p>
+                </td>
+                <td>
+                  <button type="button" class="btn btn-info" data-toggle="modal" data-target="#editModal">修改</button>
+                  <!-- <button type="button" class="btn btn-success">启用</button> -->
+                  <button type="button" class="qijin btn btn-danger">禁用</button>
+                </td>
+              </tr>
+              <tr>
+                <td>1</td>
+                <td>admin</td>
+                <td>管理员</td>
+                <td>127.0.0.1</td>
+                <td>2019.4.8 13:45:00</td>
+                <td>120</td>
+                <td>
+                  <p class="text-success">启用</p>
+                </td>
+                <td>
+                  <button type="button" class="btn btn-info">修改</button>
+                  <!-- <button type="button" class="btn btn-success">启用</button> -->
+                  <button type="button" class="qijin btn btn-danger">禁用</button>
+                </td>
+              </tr>
+              <tr>
+                <td>1</td>
+                <td>admin</td>
+                <td>管理员</td>
+                <td>127.0.0.1</td>
+                <td>2019.4.8 13:45:00</td>
+                <td>120</td>
+                <td>
+                  <p class="text-success">启用</p>
+                </td>
+                <td>
+                  <button type="button" class="btn btn-info">修改</button>
+                  <!-- <button type="button" class="btn btn-success">启用</button> -->
+                  <button type="button" class="qijin btn btn-danger">禁用</button>
+                </td>
+              </tr>
+              <tr>
+                <td>1</td>
+                <td>admin</td>
+                <td>管理员</td>
+                <td>127.0.0.1</td>
+                <td>2019.4.8 13:45:00</td>
+                <td>120</td>
+                <td>
+                  <p class="text-danger">禁用</p>
+                </td>
+                <td>
+                  <button type="button" class="btn btn-info">修改</button>
+                  <!-- <button type="button" class="btn btn-success">启用</button> -->
+                  <button type="button" class="qijin btn btn-success">启用</button>
+                </td>
+              </tr>
+              <tr>
+                <td>1</td>
+                <td>admin</td>
+                <td>管理员</td>
+                <td>127.0.0.1</td>
+                <td>2019.4.8 13:45:00</td>
+                <td>120</td>
+                <td>
+                  <p class="text-success">启用</p>
+                </td>
+                <td>
+                  <button type="button" class="btn btn-info">修改</button>
+                  <!-- <button type="button" class="btn btn-success">启用</button> -->
+                  <button type="button" class="qijin btn btn-danger">禁用</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="bs-example" data-example-id="disabled-active-pagination">
+            <nav aria-label="...">
+              <ul class="pagination">
+                <li class="disabled"><a href="#" aria-label="Previous"><span aria-hidden="true">«</span></a></li>
+                <li class="active"><a href="#">1 <span class="sr-only">(current)</span></a></li>
+                <li><a href="#">2</a></li>
+                <li><a href="#">3</a></li>
+                <li><a href="#">4</a></li>
+                <li><a href="#">5</a></li>
+                <li><a href="#" aria-label="Next"><span aria-hidden="true">»</span></a></li>
+              </ul>
+            </nav>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- jQuery (Bootstrap 的所有 JavaScript 插件都依赖 jQuery，所以必须放在前边) -->
+  <script src="__ADMIN__js/jquery.min.js"></script>
+  <!-- 加载 Bootstrap 的所有 JavaScript 插件。你也可以根据需要只加载单个插件。 -->
+  <script src="__ADMIN__js/bootstrap.min.js"></script>
+</body>
+
+</html>
+<script src="__ADMIN__js/main.js"></script>
+<script>
+  $(function() {
+
+    // 添加管理员
+    $('#addAdmin').bind('click', function() {
+      $('#addModal').modal('hide');
+      aSuccess('success', '添加管理员成功');
+    })
+
+    // 修改管理员
+    $('#editAdmin').bind('click', function() {
+      $('#editModal').modal('hide');
+      aSuccess('success', '修改管理员成功');
+    })
+
+    // 成功/失败信息
+    function aSuccess(status, message) {
+      let timer = null;
+      let txt1 = '';
+      if (status == 'success') {
+        txt1 = '<div class="alert alert-success" id="statusMsg" role="alert">' + message + '</div>';
+      } else if (status == 'error') {
+        txt1 = '<div class="alert alert-danger" id="statusMsg" role="alert">' + message + '</div>';
+      }
+      $('body').append(txt1);
+      $('#statusMsg').animate({
+        top: "200px",
+        opacity: 1
+      }, 500, function() {
+        timer = window.setTimeout(function() {
+          $('#statusMsg').animate({
+            opacity: 0
+          }, 500, function() {
+            $('#statusMsg').remove();
+          });
+        }, 500);
+      });
+      window.clearTimeout(timer);
+    }
+    // 频繁锁
+    let isLock = false;
+    // 启用/禁用
+    $('.qijin').bind('click',function(){
+
+      console.log(isLock);
+      if(isLock){
+        alert('操作过于频繁');
+        return false;
+      }
+      if($(this).is('.btn-danger')){
+        $(this).removeClass('btn-danger').addClass('btn-success').text('启用');
+        $(this).parent().prev().html('<p class="text-danger">禁用</p>');
+        aSuccess('success', '禁用成功');
+      }else{
+        $(this).removeClass('btn-success').addClass('btn-danger').text('禁用');
+        $(this).parent().prev().html('<p class="text-success">启用</p>');
+        aSuccess('success', '启用成功');
+      }
+      isLock = true;
+      window.setTimeout(function() {
+        isLock = false;
+      },2000);
+    })
+  })
+</script>

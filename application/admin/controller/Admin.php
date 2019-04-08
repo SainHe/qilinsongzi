@@ -101,9 +101,9 @@ class Admin extends Controller
 			return;
 		}
 	}
-	public function test()
+	public function admin()
 	{
-		// 测试页面
-		return view('test');
+		// 管理员页面
+		return view();
 	}
 }
