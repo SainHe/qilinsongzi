@@ -42,40 +42,41 @@
                 <h4 class="modal-title" id="addModalLabel">添加管理员</h4>
               </div>
               <div class="modal-body">
-                <form class="form-horizontal">
+                <form id="addAdminForm" class="form-horizontal">
                   <div class="form-group">
                     <label for="username" class="col-sm-3 control-label">账号</label>
                     <div class="col-sm-8">
-                      <input type="text" class="form-control" id="username" placeholder="账号">
+                      <input type="text" name="username" class="form-control" id="username" placeholder="账号">
                     </div>
                   </div>
                   <div class="form-group">
                     <label for="nickname" class="col-sm-3 control-label">昵称</label>
                     <div class="col-sm-8">
-                      <input type="text" class="form-control" id="nickname" placeholder="昵称">
+                      <input type="text" name="nickname" class="form-control" id="nickname" placeholder="昵称">
                     </div>
                   </div>
                   <div class="form-group">
                     <label for="password" class="col-sm-3 control-label">密码</label>
                     <div class="col-sm-8">
-                      <input type="password" class="form-control" id="password" placeholder="密码">
+                      <input type="password" name="password" class="form-control" id="password" placeholder="密码">
                     </div>
                   </div>
                   <div class="form-group">
                     <label for="repassword" class="col-sm-3 control-label">再次输入密码</label>
                     <div class="col-sm-8">
-                      <input type="password" class="form-control" id="repassword" placeholder="再次输入密码">
+                      <input type="password" name="repassword" class="form-control" id="repassword" placeholder="再次输入密码">
                     </div>
                   </div>
                   <div class="form-group">
                     <label class="col-sm-3 control-label">状态</label>
                     <div class="col-sm-8">
-                      <select class="form-control">
+                      <select class="form-control" name="static">
                         <option value="1" selected>启用</option>
                         <option value="2">禁用</option>
                       </select>
                     </div>
                   </div>
+                  <p id="errorMessage" class="text-danger text-center" style="padding-top:10px;"></p>
                 </form>
               </div>
               <div class="modal-footer">
@@ -128,7 +129,7 @@
                       </select>
                     </div>
                   </div>
-                  <p class="text-danger text-center" style="padding-top:10px;">两次输入的密码不一致</p>
+                  <p id="errorMessage" class="text-danger text-center" style="padding-top:10px;"></p>
                 </form>
               </div>
               <div class="modal-footer">
@@ -138,115 +139,62 @@
             </div>
           </div>
         </div>
-        <div class="table-responsive text-center">
-          <table class="table table-bordered table-hover">
-            <thead>
-              <tr class="active">
-                <th class="text-center">ID</th>
-                <th class="text-center">账号</th>
-                <th class="text-center">昵称</th>
-                <th class="text-center">最后登录IP</th>
-                <th class="text-center">最后登录时间</th>
-                <th class="text-center">登录次数</th>
-                <th class="text-center">状态</th>
-                <th class="text-center" width="170">操作</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>1</td>
-                <td>admin</td>
-                <td>管理员</td>
-                <td>127.0.0.1</td>
-                <td>2019.4.8 13:45:00</td>
-                <td>120</td>
-                <td>
-                  <p class="text-success">启用</p>
-                </td>
-                <td>
-                  <button type="button" class="btn btn-info" data-toggle="modal" data-target="#editModal">修改</button>
-                  <!-- <button type="button" class="btn btn-success">启用</button> -->
-                  <button type="button" class="qijin btn btn-danger">禁用</button>
-                </td>
-              </tr>
-              <tr>
-                <td>1</td>
-                <td>admin</td>
-                <td>管理员</td>
-                <td>127.0.0.1</td>
-                <td>2019.4.8 13:45:00</td>
-                <td>120</td>
-                <td>
-                  <p class="text-success">启用</p>
-                </td>
-                <td>
-                  <button type="button" class="btn btn-info">修改</button>
-                  <!-- <button type="button" class="btn btn-success">启用</button> -->
-                  <button type="button" class="qijin btn btn-danger">禁用</button>
-                </td>
-              </tr>
-              <tr>
-                <td>1</td>
-                <td>admin</td>
-                <td>管理员</td>
-                <td>127.0.0.1</td>
-                <td>2019.4.8 13:45:00</td>
-                <td>120</td>
-                <td>
-                  <p class="text-success">启用</p>
-                </td>
-                <td>
-                  <button type="button" class="btn btn-info">修改</button>
-                  <!-- <button type="button" class="btn btn-success">启用</button> -->
-                  <button type="button" class="qijin btn btn-danger">禁用</button>
-                </td>
-              </tr>
-              <tr>
-                <td>1</td>
-                <td>admin</td>
-                <td>管理员</td>
-                <td>127.0.0.1</td>
-                <td>2019.4.8 13:45:00</td>
-                <td>120</td>
-                <td>
-                  <p class="text-danger">禁用</p>
-                </td>
-                <td>
-                  <button type="button" class="btn btn-info">修改</button>
-                  <!-- <button type="button" class="btn btn-success">启用</button> -->
-                  <button type="button" class="qijin btn btn-success">启用</button>
-                </td>
-              </tr>
-              <tr>
-                <td>1</td>
-                <td>admin</td>
-                <td>管理员</td>
-                <td>127.0.0.1</td>
-                <td>2019.4.8 13:45:00</td>
-                <td>120</td>
-                <td>
-                  <p class="text-success">启用</p>
-                </td>
-                <td>
-                  <button type="button" class="btn btn-info">修改</button>
-                  <!-- <button type="button" class="btn btn-success">启用</button> -->
-                  <button type="button" class="qijin btn btn-danger">禁用</button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-          <div class="bs-example" data-example-id="disabled-active-pagination">
-            <nav aria-label="...">
-              <ul class="pagination">
-                <li class="disabled"><a href="#" aria-label="Previous"><span aria-hidden="true">«</span></a></li>
-                <li class="active"><a href="#">1 <span class="sr-only">(current)</span></a></li>
-                <li><a href="#">2</a></li>
-                <li><a href="#">3</a></li>
-                <li><a href="#">4</a></li>
-                <li><a href="#">5</a></li>
-                <li><a href="#" aria-label="Next"><span aria-hidden="true">»</span></a></li>
-              </ul>
-            </nav>
+        <div id="content">
+          <div class="table-responsive text-center">
+            <table class="table table-bordered table-hover">
+              <thead>
+                <tr class="active">
+                  <th class="text-center">ID</th>
+                  <th class="text-center">账号</th>
+                  <th class="text-center">昵称</th>
+                  <th class="text-center">最后登录IP</th>
+                  <th class="text-center">最后登录时间</th>
+                  <th class="text-center">登录次数</th>
+                  <th class="text-center">状态</th>
+                  <th class="text-center" width="170">操作</th>
+                </tr>
+              </thead>
+              <tbody>
+                {volist name="res" id="admin"}
+                <tr>
+                  <td>{$admin.id}</td>
+                  <td>{$admin.userName}</td>
+                  <td>{$admin.nickName}</td>
+                  <td>{$admin.lastIP}</td>
+                  <td>{$admin.lastTime}</td>
+                  <td>{$admin.loginNum}</td>
+                  <td>
+                    {if condition="($admin.userStatus == 1)"}
+                    <p class="text-success">启用</p>
+                    {elseif condition="$admin.userStatus == 2"/}
+                    <p class="text-danger">禁用</p>
+                    {/if}
+                  </td>
+                  <td>
+                    <button type="button" class="btn btn-info" data-toggle="modal" data-target="#editModal">修改</button>
+                    {if condition="($admin.userStatus == 1)"}
+                    <button type="button" class="qijin btn btn-danger" data-id="{$admin.id}" data-status="{$admin.userStatus+1}">禁用</button>
+                    {elseif condition="$admin.userStatus == 2"/}
+                    <button type="button" class="qijin btn btn-success" data-id="{$admin.id}" data-status="{$admin.userStatus-1}">启用</button>
+                    {/if}
+                  </td>
+                </tr>
+                {/volist}
+              </tbody>
+            </table>
+            <div class="bs-example" data-example-id="disabled-active-pagination">
+              <nav aria-label="...">
+                <ul class="pagination">
+                  <li class="disabled"><a href="#" aria-label="Previous"><span aria-hidden="true">«</span></a></li>
+                  <li class="active"><a href="#">1 <span class="sr-only">(current)</span></a></li>
+                  <li><a href="#">2</a></li>
+                  <li><a href="#">3</a></li>
+                  <li><a href="#">4</a></li>
+                  <li><a href="#">5</a></li>
+                  <li><a href="#" aria-label="Next"><span aria-hidden="true">»</span></a></li>
+                </ul>
+              </nav>
+            </div>
           </div>
         </div>
       </div>
@@ -258,68 +206,96 @@
   <script src="__ADMIN__js/jquery.min.js"></script>
   <!-- 加载 Bootstrap 的所有 JavaScript 插件。你也可以根据需要只加载单个插件。 -->
   <script src="__ADMIN__js/bootstrap.min.js"></script>
+  <script src="__ADMIN__js/main.js"></script>
 </body>
 
 </html>
-<script src="__ADMIN__js/main.js"></script>
 <script>
   $(function() {
 
     // 添加管理员
     $('#addAdmin').bind('click', function() {
-      $('#addModal').modal('hide');
-      aSuccess('success', '添加管理员成功');
+      let $username = $('#addAdminForm input[name="username"]')[0].value,
+          $nickname = $('#addAdminForm input[name="nickname"]')[0].value,
+          $password = $('#addAdminForm input[name="password"]')[0].value,
+          $repassword = $('#addAdminForm input[name="repassword"]')[0].value;
+      if(!$username){
+        $('#errorMessage').text('请输入用户名');
+      }else if(!nickname){
+        $('#errorMessage').text('请输入昵称');
+      }else if(!password){
+        $('#errorMessage').text('请输入密码');
+      }else if($password !== $repassword ){
+        $('#errorMessage').text('两次密码输入不一致');
+      }else if($username.length < 3 || $username.length > 12){
+        $('#errorMessage').text('用户名请填写3-12位');
+      }else if($password.length < 6 || $password.length > 18){
+        $('#errorMessage').text('密码请设置6-18位');
+      }else{
+        let postData  = $('#addAdminForm').serialize();
+        $.ajax({
+          url:'/admin/admin/add',
+          type:'POST',
+          async:true,
+          data:postData,
+          dataType:'json',
+          contentType:'application/x-www-form-urlencoded',
+          success: function(res){
+            let $res = JSON.parse(decodeURIComponent(res));
+
+            if($res['code'] == 3){  // 用户名已存在
+              $('#errorMessage').text($res['message']);
+            }else if($res['code'] == 0){  // 失败
+              tool.aMessage('error', $res['message']);
+            }else{  // 成功
+              $('#addModal').modal('hide');
+              tool.aMessage('success', $res['message']);
+              $('#content').load('/admin/admin/admin .table-responsive');
+            }
+          },
+          error: function(err){
+            console.log(err);
+          }
+        });
+      }
+      
     })
 
     // 修改管理员
     $('#editAdmin').bind('click', function() {
       $('#editModal').modal('hide');
-      aSuccess('success', '修改管理员成功');
+      tool.aMessage('success', '修改管理员成功');
     })
-
-    // 成功/失败信息
-    function aSuccess(status, message) {
-      let timer = null;
-      let txt1 = '';
-      if (status == 'success') {
-        txt1 = '<div class="alert alert-success" id="statusMsg" role="alert">' + message + '</div>';
-      } else if (status == 'error') {
-        txt1 = '<div class="alert alert-danger" id="statusMsg" role="alert">' + message + '</div>';
-      }
-      $('body').append(txt1);
-      $('#statusMsg').animate({
-        top: "200px",
-        opacity: 1
-      }, 500, function() {
-        timer = window.setTimeout(function() {
-          $('#statusMsg').animate({
-            opacity: 0
-          }, 500, function() {
-            $('#statusMsg').remove();
-          });
-        }, 500);
-      });
-      window.clearTimeout(timer);
-    }
     // 频繁锁
     let isLock = false;
     // 启用/禁用
-    $('.qijin').bind('click',function(){
-
-      console.log(isLock);
+    $('#content').on('click','.qijin',function(){
       if(isLock){
         alert('操作过于频繁');
         return false;
       }
-      if($(this).is('.btn-danger')){
-        $(this).removeClass('btn-danger').addClass('btn-success').text('启用');
-        $(this).parent().prev().html('<p class="text-danger">禁用</p>');
-        aSuccess('success', '禁用成功');
-      }else{
-        $(this).removeClass('btn-success').addClass('btn-danger').text('禁用');
-        $(this).parent().prev().html('<p class="text-success">启用</p>');
-        aSuccess('success', '启用成功');
-      }
+      $.ajax({
+        url:'/admin/admin/changestatus',
+        type:'POST',
+        async:true,
+        data:{'id':$(this).attr('data-id'),'status':$(this).attr('data-status')},
+        dataType:'json',
+        contentType:'application/x-www-form-urlencoded',
+        success: function(res){
+          let $res = JSON.parse(decodeURIComponent(res));
+          console.log($res);
+          if($res['code'] == 0){  // 失败
+            tool.aMessage('error', $res['message']);
+          }else{  // 成功
+            tool.aMessage('success', $res['message']);
+            $('#content').load('/admin/admin/admin .table-responsive');
+          }
+        },
+        error: function(err){
+          console.log(err);
+        }
+      });
+      
       isLock = true;
       window.setTimeout(function() {
         isLock = false;
