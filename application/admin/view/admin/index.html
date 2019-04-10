@@ -95,41 +95,42 @@
                 <h4 class="modal-title" id="editModalLabel">修改管理员</h4>
               </div>
               <div class="modal-body">
-                <form class="form-horizontal">
+                <form id="editAdminForm" class="form-horizontal">
+                  <input type="hidden" name="id" id="adminId">
                   <div class="form-group">
                     <label for="username02" class="col-sm-3 control-label">账号</label>
                     <div class="col-sm-8">
-                      <input type="text" class="form-control" id="username02" value="admin" readonly>
+                      <input type="text" name="username" class="form-control" id="username02" value="admin" readonly>
                     </div>
                   </div>
                   <div class="form-group">
                     <label for="nickname02" class="col-sm-3 control-label">昵称</label>
                     <div class="col-sm-8">
-                      <input type="text" class="form-control" id="nickname02" placeholder="昵称">
+                      <input type="text" name="nickname" class="form-control" id="nickname02" placeholder="昵称">
                     </div>
                   </div>
                   <div class="form-group">
                     <label for="password02" class="col-sm-3 control-label">密码</label>
                     <div class="col-sm-8">
-                      <input type="password" class="form-control" id="password02" placeholder="密码如不修改，请不要填写！">
+                      <input type="password" name="password" class="form-control" id="password02" placeholder="密码如不修改，请不要填写！">
                     </div>
                   </div>
                   <div class="form-group">
                     <label for="repassword02" class="col-sm-3 control-label">再次输入密码</label>
                     <div class="col-sm-8">
-                      <input type="password" class="form-control" id="repassword02" placeholder="密码入不修改，请不要填写！">
+                      <input type="password" name="repassword" class="form-control" id="repassword02" placeholder="密码入不修改，请不要填写！">
                     </div>
                   </div>
                   <div class="form-group">
                     <label class="col-sm-3 control-label">状态</label>
                     <div class="col-sm-8">
-                      <select class="form-control">
+                      <select class="form-control" id="status02" name="status">
                         <option value="1" selected>启用</option>
                         <option value="2">禁用</option>
                       </select>
                     </div>
                   </div>
-                  <p id="errorMessage" class="text-danger text-center" style="padding-top:10px;"></p>
+                  <p id="errorMessage02" class="text-danger text-center" style="padding-top:10px;"></p>
                 </form>
               </div>
               <div class="modal-footer">
@@ -151,11 +152,11 @@
                   <th class="text-center">最后登录时间</th>
                   <th class="text-center">登录次数</th>
                   <th class="text-center">状态</th>
-                  <th class="text-center" width="170">操作</th>
+                  <th class="text-center" width="210">操作</th>
                 </tr>
               </thead>
               <tbody>
-                {volist name="res" id="admin"}
+                {volist name="adminres" id="admin"}
                 <tr>
                   <td>{$admin.id}</td>
                   <td>{$admin.userName}</td>
@@ -171,36 +172,42 @@
                     {/if}
                   </td>
                   <td>
-                    <button type="button" class="btn btn-info" data-toggle="modal" data-target="#editModal">修改</button>
+                    <button type="button" class="edit-admin btn btn-info" data-toggle="modal" data-id="{$admin.id}" data-target="#editModal">修改</button>
                     {if condition="($admin.userStatus == 1)"}
-                    <button type="button" class="qijin btn btn-danger" data-id="{$admin.id}" data-status="{$admin.userStatus+1}">禁用</button>
+                    <button type="button" class="qijin btn btn-warning" data-id="{$admin.id}" data-status="{$admin.userStatus+1}">禁用</button>
                     {elseif condition="$admin.userStatus == 2"/}
                     <button type="button" class="qijin btn btn-success" data-id="{$admin.id}" data-status="{$admin.userStatus-1}">启用</button>
                     {/if}
+                    <button type="button" data-id="{$admin.id}" class="confirm btn btn-danger">删除</button>
                   </td>
                 </tr>
                 {/volist}
               </tbody>
             </table>
-            <div class="bs-example" data-example-id="disabled-active-pagination">
-              <nav aria-label="...">
-                <ul class="pagination">
-                  <li class="disabled"><a href="#" aria-label="Previous"><span aria-hidden="true">«</span></a></li>
-                  <li class="active"><a href="#">1 <span class="sr-only">(current)</span></a></li>
-                  <li><a href="#">2</a></li>
-                  <li><a href="#">3</a></li>
-                  <li><a href="#">4</a></li>
-                  <li><a href="#">5</a></li>
-                  <li><a href="#" aria-label="Next"><span aria-hidden="true">»</span></a></li>
-                </ul>
-              </nav>
-            </div>
+            {$adminres->render()}
           </div>
         </div>
       </div>
     </div>
   </div>
-
+  <div class="modal fade" id="myConfirm" tabindex="-1" role="dialog" aria-labelledby="myConfirmLabel">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" id="myModalLabel">确认框</h4>
+        </div>
+        <div class="modal-body">
+          <h3 class="text-center">删除用户将无法恢复，请再次确认</h3>
+          <input type="hidden" name="removeId" id="removeId">
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+          <button type="button" id="removeAdmin" class="btn btn-primary">删除</button>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <!-- jQuery (Bootstrap 的所有 JavaScript 插件都依赖 jQuery，所以必须放在前边) -->
   <script src="__ADMIN__js/jquery.min.js"></script>
@@ -212,7 +219,35 @@
 </html>
 <script>
   $(function() {
+    // 询问删除管理员
+    $('#content').on('click','.confirm',function(){
+      $('#removeId').val($(this).attr('data-id'));
+      $('#myConfirm').modal('toggle');
+    })
+    // 删除管理员
+    $('#removeAdmin').bind('click',function(){
 
+      $.ajax({
+        url:'/admin/admin/removeadmin',
+        type:'POST',
+        async:true,
+        data:{'removeId':$('#removeId').val()},
+        dataType:'json',
+        contentType:'application/x-www-form-urlencoded',
+        success: function(res){
+          let $res = JSON.parse(decodeURIComponent(res));
+          if($res['code'] == 0){  // 失败
+            tool.aMessage('error', $res['message']);
+          }else{  // 成功
+            $('#myConfirm').modal('hide');
+            tool.aMessage('success', $res['message'], '/admin/admin/index');
+          }
+        },
+        error: function(err){
+          console.log(err);
+        }
+      });
+    })
     // 添加管理员
     $('#addAdmin').bind('click', function() {
       let $username = $('#addAdminForm input[name="username"]')[0].value,
@@ -250,7 +285,6 @@
             }else{  // 成功
               $('#addModal').modal('hide');
               tool.aMessage('success', $res['message']);
-              $('#content').load('/admin/admin/admin .table-responsive');
             }
           },
           error: function(err){
@@ -258,13 +292,69 @@
           }
         });
       }
-      
+
     })
 
+    // 查询管理员
+    $('#content').on('click','.edit-admin',function(){
+      let adminId = $(this).attr('data-id');
+      $.ajax({
+        url:'/admin/admin/findadmin',
+        type:'POST',
+        async:true,
+        data:{'id':adminId},
+        dataType:'json',
+        contentType:'application/x-www-form-urlencoded',
+        success: function(res){
+          let $res = JSON.parse(decodeURIComponent(res));
+          $('#adminId').val($res['id']);
+          $('#username02').val($res['userName']);
+          $('#nickname02').val($res['nickName']);
+          if($res['userStatus'] == 1){
+            $('#status02').find('option').eq(0).attr('selected',true);
+          }else{
+            $('#status02').find('option').eq(1).attr('selected',true);
+          }
+        },
+        error: function(err){
+          console.log(err);
+        }
+      });
+    })
     // 修改管理员
     $('#editAdmin').bind('click', function() {
-      $('#editModal').modal('hide');
-      tool.aMessage('success', '修改管理员成功');
+      if($('#password02').val() != $('#repassword02').val()){
+        $('#errorMessage02').html('两次密码输入不一致');
+        return;
+      }else if($('#password02').val()){
+        if($('#password02').val().length < 6 || $('#password02').val().length > 18){
+          $('#errorMessage02').html('密码请设置6-18位');
+          return;
+        }
+      }
+      let postData  = $('#editAdminForm').serialize();
+      $.ajax({
+        url:'/admin/admin/edit',
+        type:'POST',
+        async:true,
+        data:postData,
+        dataType:'json',
+        contentType:'application/x-www-form-urlencoded',
+        success: function(res){
+          let $res = JSON.parse(decodeURIComponent(res));
+          if($res['code'] == 1){
+            $('#editModal').modal('hide');
+            tool.aMessage('success', $res['message']);
+          }else{
+            $('#editModal').modal('hide');
+            tool.aMessage('error', $res['message']);
+          }
+
+        },
+        error: function(err){
+          console.log(err);
+        }
+      });
     })
     // 频繁锁
     let isLock = false;
@@ -283,19 +373,19 @@
         contentType:'application/x-www-form-urlencoded',
         success: function(res){
           let $res = JSON.parse(decodeURIComponent(res));
-          console.log($res);
+          // console.log($res);
           if($res['code'] == 0){  // 失败
             tool.aMessage('error', $res['message']);
           }else{  // 成功
-            tool.aMessage('success', $res['message']);
-            $('#content').load('/admin/admin/admin .table-responsive');
+            tool.aMessage('success', $res['message'], 'off');
+            $('#content').load(' .table-responsive');
           }
         },
         error: function(err){
           console.log(err);
         }
       });
-      
+
       isLock = true;
       window.setTimeout(function() {
         isLock = false;

@@ -1,17 +1,16 @@
 <?php
 namespace app\admin\controller;
-use think\Controller;
 use think\Request;
-//use think\Db;
 use app\admin\model\Admin as AdminModel;
-class Admin extends Controller
+use app\admin\controller\Common;
+class Admin extends Common
 {
-	public function admin()
+	public function index()
 	{
 		// 管理员列表页
 		$admin = new AdminModel();
-		$res = $admin->getadmin();
-		$this->assign('res',$res);
+		$res = $admin->adminget();
+		$this->assign('adminres',$res);
 		return view();
 	}
 	public function changestatus(){
@@ -19,11 +18,11 @@ class Admin extends Controller
 		$admin = new AdminModel();
 		$adminId = input('post.id');
 		$adminStatus = input('post.status');
-		$res = $admin->changestatus($adminId,$adminStatus);
+		$res = $admin->adminedit($adminId,['userStatus' => $adminStatus]);
 		if($res){
-			return json_encode(['code'=>1,'message'=>urlencode('状态修改成功')]);
+			return json_encode(['code'=>1,'message'=>'状态修改成功'],JSON_UNESCAPED_UNICODE);
 		}else{
-			return json_encode(['code'=>0,'message'=>urlencode('状态修改失败')]);
+			return json_encode(['code'=>0,'message'=>'状态修改失败'],JSON_UNESCAPED_UNICODE);
 		}
 	}
 	public function add()	// 添加管理员
@@ -33,10 +32,10 @@ class Admin extends Controller
 		if ($request->isPost()) {	// 判断是否post请求
 			// 判断用户名是否重复？
 			$adminname = input('post.username');
-			$isName = $admin->findadmin($adminname);
+			$isName = $admin->adminfind(['userName'=>$adminname]);
 
 			if($isName){
-				return json_encode(['code'=>3,'message'=>urlencode('用户名已存在')]);
+				return json_encode(['code'=>3,'message'=>'用户名已存在'],JSON_UNESCAPED_UNICODE);
 			}
 			$data = [
 				'userName' => input('post.username'),
@@ -50,9 +49,9 @@ class Admin extends Controller
 			];
 			$res = $admin->addadmin($data);
 			if($res){
-				return json_encode(['code'=>1,'message'=>urlencode('添加管理员成功')]);
+				return json_encode(['code'=>1,'message'=>'添加管理员成功'],JSON_UNESCAPED_UNICODE);
 			}else{
-				return json_encode(['code'=>0,'message'=>urlencode('添加管理员失败')]);
+				return json_encode(['code'=>0,'message'=>'添加管理员失败'],JSON_UNESCAPED_UNICODE);
 			}
 		}
 		return;
@@ -61,65 +60,53 @@ class Admin extends Controller
 	{
 		// 根据传入ID查询单条数据
 		$request = Request::instance();
+		$admin = new AdminModel();
 		if ($request->isPost()) {
 			$adminId = $request->post('id');
-			$res = db('admin')->where('id',$adminId)->find();
-			return json_encode($res);
+			$res = $admin->adminfind(['id'=>$adminId]);
+			return json_encode($res,JSON_UNESCAPED_UNICODE);
 		}
-		
+
 	}
-	
+
 	public function edit()
 	{
 		// 修改管理员信息
 		$request = Request::instance();
+		$admin = new AdminModel();
 		if ($request->isPost()) {
 			$adminId = $request->post('id');
 			$nickName = $request->post('nickname');
-			$userStatus = $request->post('userStatus');
+			$userStatus = $request->post('status');
 			if($request->post('password')){
 				$passWord = md5($request->post('password'));
-				db('admin')->where('id',$adminId)->update([
-					'passWord' => $passWord,
-				]);
+				$admin->adminedit($adminId,['passWord'=>$passWord]);
 			}
-			$res = db('admin')->where('id',$adminId)->update([
-					'nickName' => $nickName,
-					'userStatus' => $userStatus,
-				]);
-				if($res){
-					return json_encode(['1'=>'success']);
-				}else{
-					return json_encode(['0'=>'error']);
-				}
+			$res = $admin->adminedit($adminId,[
+				'nickName' => $nickName,
+				'userStatus' => $userStatus,
+			]);
+			if($res){
+				return json_encode(['code'=>'1','message'=>'修改成功'],JSON_UNESCAPED_UNICODE);
+			}else{
+				return json_encode(['code'=>'0','message'=>'修改失败'],JSON_UNESCAPED_UNICODE);
+			}
 			return;
 		}
 	}
-	public function login()
-	{
-		// 登录接口
+	public function removeAdmin(){
+		// 删除管理员
 		$request = Request::instance();
-		if ($request->isPost()) {	// 判断是否post请求
-			$res = db('admin')
-					->where('userName',$request->post('username'))
-					->where('passWord',md5($request->post('password')))
-					->find();
-			$adminId = $res['id'];
-			$loginNum = $res['loginNum']+1;
-			$userStatus = $res['userStatus'];
-			db('admin')->where('id',$adminId)->update([
-				'loginNum' => $loginNum,
-				'lastIP' => $request->ip(),
-				'lastTime' => date('Y-n-j H:i:s'),
-			]);
-			if($userStatus == 1){
-				return json_encode(['code'=>'1', 'msg'=>'登录成功']);
-			}else if($userStatus == 2){
-				return json_encode(['code'=>'2', 'msg'=>'用户已禁用']);
+		$admin = new AdminModel();
+		if ($request->isPost()) {
+			$adminId = $request->post('removeId');
+			$res = $admin->adminremove($adminId);
+			if($res){
+				return json_encode(['code'=>'1','message'=>'删除成功'],JSON_UNESCAPED_UNICODE);
 			}else{
-				return json_encode(['code'=>'0', 'msg'=>'登录失败']);
+				return json_encode(['code'=>'0','message'=>'删除失败'],JSON_UNESCAPED_UNICODE);
 			}
+			return;
 		}
-			
 	}
 }

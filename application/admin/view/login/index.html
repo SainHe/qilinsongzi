@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+  <title>登录</title>
+
+  <!-- Bootstrap -->
+  <link rel="stylesheet" href="__ADMIN__css/bootstrap.min.css">
+  <link rel="stylesheet" href="__ADMIN__css/login.css">
+
+  <!--[if lt IE 9]>
+      <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+    <![endif]-->
+</head>
+
+<body>
+  <div class="login">
+    <div class="login-container">
+      <form class="login-form">
+        <h3>麒麟送子网站管理系统</h3>
+        <div class="form-group">
+          <input type="text" name="username" id="username" class="form-control username" placeholder="账号">
+          <p class="text-danger" style="padding-top:10px;" id="usernameText"></p>
+        </div>
+        <div class="form-group">
+          <input type="password" name="password" id="password" class="form-control password" placeholder="密码">
+          <p class="text-danger" style="padding-top:10px;" id="passwordText"></p>
+        </div>
+        <button type="button" id="login-btn" class="btn btn-info login-btn">登录</button>
+      </form>
+    </div>
+  </div>
+
+  <div class="modal fade" id="myAlert" style="top:150px;" tabindex="-1" role="dialog" aria-labelledby="myAlertLabel">
+    <div class="modal-dialog modal-sm" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" id="myModalLabel">提示信息</h4>
+        </div>
+        <div class="modal-body">
+          <h3 class="text-center" id="message"></h3>
+          <input type="hidden" name="removeId" id="removeId">
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">确定</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- jQuery (Bootstrap 的所有 JavaScript 插件都依赖 jQuery，所以必须放在前边) -->
+  <script src="__ADMIN__js/jquery.min.js"></script>
+  <!-- 加载 Bootstrap 的所有 JavaScript 插件。你也可以根据需要只加载单个插件。 -->
+  <script src="__ADMIN__js/bootstrap.min.js"></script>
+</body>
+</html>
+<script>
+$(function(){
+  $('#username').focus();
+  $('#login-btn').bind('click',loginCheck);
+  $(document).bind('keyup',function(event){
+    if (event.keyCode == "13") {
+      loginCheck();
+    }
+  });
+  function loginCheck(){
+    if(!$('#username').val()){
+      $('#usernameText').html('请输入账号');
+    }else if(!$('#password').val()){
+      $('#passwordText').html('请输入密码');
+    }else{
+      $.ajax({
+        url:'/admin/login/login',
+        type:'POST',
+        async:true,
+        data:{'username':$('#username').val(),'password':$('#password').val()},
+        dataType:'json',
+        contentType:'application/x-www-form-urlencoded',
+        success: function(res){
+          let $res = JSON.parse(decodeURIComponent(res));
+          if($res['code'] == 0){  // 失败
+            $('#message').text($res['message']);
+            $('#myAlert').modal('toggle');
+          }else if($res['code'] == 2){  // 禁用
+            $('#message').text($res['message']);
+            $('#myAlert').modal('toggle');
+          }else{
+            window.location.href = '/admin/index/index';
+          }
+        },
+        error: function(err){
+          console.log(err);
+        }
+      });
+    }
+  }
+})
+</script>

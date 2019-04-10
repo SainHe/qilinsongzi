@@ -1,19 +1,12 @@
 <?php
 namespace app\admin\controller;
-use think\Controller;
 use think\Request;
-use think\Db;
-class Index extends Controller
+use app\admin\model\Admin as AdminModel;
+use app\admin\controller\Common;
+class Index extends Common
 {
     public function index($name = '张三', $sex='女')
     {
-		return view('index');	
+		return view('index');
     }
-	public function login()
-	{
-		echo '1';
-		if (Request::instance()->isPost()) return "当前为 POST 请求";
-		//$data = Db::name('user')->find();
-		//print_r($data);
-	}
 }
