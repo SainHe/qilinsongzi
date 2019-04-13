@@ -51,7 +51,7 @@
                       <select class="form-control" name="pid">
                         <option value="0" selected>根目录</option>
                         {volist name="categoryres" id="category"}
-                        <option value="{$category.id}">{$category.categoryName}</option>
+                        <option value="{$category.id}"><?php echo str_repeat('&nbsp;',$category['level']*4).'|—' ?>{$category.categoryName}</option>
                         {/volist}
                       </select>
                     </div>
@@ -89,7 +89,7 @@
                       <select class="form-control" id="pid02" name="pid">
                         <option value="0" selected>根目录</option>
                         {volist name="categoryres" id="category"}
-                        <option value="{$category.id}">{$category.categoryName}</option>
+                        <option value="{$category.id}"><?php echo str_repeat('&nbsp;',$category['level']*4).'|—' ?>{$category.categoryName}</option>
                         {/volist}
                       </select>
                     </div>
@@ -123,7 +123,7 @@
                 {volist name="categoryres" id="category"}
                 <tr>
                   <td>{$category.id}</td>
-                  <td class="text-left">{$category.categoryName}</td>
+                  <td class="text-left"><?php echo str_repeat('——',$category['level']-1) ?>{$category.categoryName}</td>
                   <td>{$category.type}</td>
                   <td>{$category.pid}</td>
                   <td>{$category.creatUser}</td>
@@ -150,7 +150,7 @@
           <h4 class="modal-title" id="myModalLabel">确认框</h4>
         </div>
         <div class="modal-body">
-          <h3 class="text-center">删除用户将无法恢复，请再次确认</h3>
+          <h3 class="text-center">删除栏目将无法恢复，请再次确认</h3>
           <input type="hidden" name="removeId" id="removeId">
         </div>
         <div class="modal-footer">
@@ -190,9 +190,14 @@
           if($res['code'] == 0){  // 失败
             tool.aMessage('error', $res['message']);
           }else{  // 成功
-            $('#myConfirm').modal('hide');
-            tool.aMessage('success', $res['message'],'off');
-            $('#content').load('/admin/category/index .table-responsive');
+            if($res['code'] == 2){
+              $('#myConfirm').modal('hide');
+              tool.aMessage('error', $res['message'],'off');
+            }else{
+              $('#myConfirm').modal('hide');
+              tool.aMessage('success', $res['message'],'off');
+              $('#content').load('/admin/category/index .table-responsive');
+            }
           }
         },
         error: function(err){

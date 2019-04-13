@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+  <title>麒麟送子网</title>
+
+  <!-- Bootstrap -->
+  <link href="__ADMIN__css/bootstrap.min.css" rel="stylesheet">
+  <link href="__ADMIN__css/main.css" rel="stylesheet">
+
+  <!--[if lt IE 9]>
+      <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+    <![endif]-->
+</head>
+
+<body>
+  <div class="main">
+    {include file="public/left" /}
+    <div class="main-container">
+      {include file="public/top" /}
+      <div class="container-fluid">
+        <!--查询功能二期开放 <div class="tabel-bar">
+          <form class="navbar-form navbar-left">
+            <button type="button" id="addMessage" class="btn btn-info" data-toggle="modal" data-target="#addMessageModal">添加</button>
+          </form>
+        </div> -->
+
+        <div id="content">
+          <div class="table-responsive text-center">
+            <table class="table table-bordered table-hover">
+              <thead>
+                <tr class="active">
+                  <th class="text-center">id</th>
+                  <th class="text-center">所属栏目</th>
+                  <th class="text-center">标题</th>
+                  <th class="text-center">作者</th>
+                  <th class="text-center">点击量</th>
+                  <th class="text-center">点赞数</th>
+                  <th class="text-center">发布时间</th>
+                  <th class="text-center" width="150">操作</th>
+                </tr>
+              </thead>
+              <tbody>
+                {volist name="articleres" id="article"}
+                <tr>
+                  <td>{$article.id}</td>
+                  <td>{$article.cateId}</td>
+                  <td><a target="_blank" href="/admin/article/show/id/{$article.id}">{$article.title}</a></td>
+                  <td>{$article.auther}</td>
+                  <td>{$article.click}</td>
+                  <td>{$article.zan}</td>
+                  <td>{$article.time}</td>
+                  <td>
+                    <button type="button" class="edit-message btn btn-info" data-toggle="modal" data-id="{$article.id}" data-target="#editMessageModal">修改</button>
+                    <button type="button" data-id="{$article.id}" class="confirm btn btn-danger">删除</button>
+                  </td>
+                </tr>
+                {/volist}
+              </tbody>
+            </table>
+            {$articleres->render()}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal fade" id="myConfirm" tabindex="-1" role="dialog" aria-labelledby="myConfirmLabel">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" id="myModalLabel">确认框</h4>
+        </div>
+        <div class="modal-body">
+          <h3 class="text-center">删除留言将无法恢复，请再次确认</h3>
+          <input type="hidden" name="removeId" id="removeId">
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+          <button type="button" id="removeMessage" class="btn btn-primary">删除</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- jQuery (Bootstrap 的所有 JavaScript 插件都依赖 jQuery，所以必须放在前边) -->
+  <script src="__ADMIN__js/jquery.min.js"></script>
+  <!-- 加载 Bootstrap 的所有 JavaScript 插件。你也可以根据需要只加载单个插件。 -->
+  <script src="__ADMIN__js/bootstrap.min.js"></script>
+  <script src="__ADMIN__js/main.js"></script>
+</body>
+
+</html>
+<script>
+  $(function() {
+    // 询问删除
+    $('#content').on('click','.confirm',function(){
+      $('#removeId').val($(this).attr('data-id'));
+      $('#myConfirm').modal('toggle');
+    })
+    // 删除留言
+    $('#removeMessage').bind('click',function(){
+      $.ajax({
+        url:'/admin/message/removemessage',
+        type:'POST',
+        async:true,
+        data:{'removeId':$('#removeId').val()},
+        dataType:'json',
+        contentType:'application/x-www-form-urlencoded',
+        success: function(res){
+          let $res = JSON.parse(decodeURIComponent(res));
+          if($res['code'] == 0){  // 失败
+            tool.aMessage('error', $res['message']);
+          }else{  // 成功
+            $('#myConfirm').modal('hide');
+            if($res['code'] == 2){
+              tool.aMessage('error', $res['message'],'off');
+            }else{
+              tool.aMessage('success', $res['message']);
+            }
+          }
+        },
+        error: function(err){
+          console.log(err);
+        }
+      });
+    })
+
+
+    // 查询当前点击项
+    $('#content').on('click','.edit-message',function(){
+      let messageId = $(this).attr('data-id');
+      $.ajax({
+        url:'/admin/message/findmessage',
+        type:'POST',
+        async:true,
+        data:{'id':messageId},
+        dataType:'json',
+        contentType:'application/x-www-form-urlencoded',
+        success: function(res){
+          let $res = JSON.parse(decodeURIComponent(res));
+          $('#messageId').val($res['id']);
+          $('#phone').val($res['phone']);
+          $('#contacts').val($res['contacts']);
+          $('#email').val($res['email']);
+          $('#weixin').val($res['weixin']);
+          $('#leaveContent').text($res['content']);
+        },
+        error: function(err){
+          console.log(err);
+        }
+      });
+    })
+    // 修改留言
+    $('#editMessageBtn').bind('click', function() {
+      // if(!$('#phone').val()){
+      //   $('#errorMessage').html('请输入联系电话');
+      //   return;
+      // }
+      let postData  = $('#editMessageForm').serialize();
+      $.ajax({
+        url:'/admin/message/edit',
+        type:'POST',
+        async:true,
+        data:postData,
+        dataType:'json',
+        contentType:'application/x-www-form-urlencoded',
+        success: function(res){
+          let $res = JSON.parse(decodeURIComponent(res));
+          $('#editMessageModal').modal('hide');
+          if($res['code'] == 1){
+            tool.aMessage('success', $res['message']);
+          }else{
+            tool.aMessage('error', $res['message'],'off');
+          }
+
+        },
+        error: function(err){
+          console.log(err);
+        }
+      });
+    })
+
+  })
+</script>

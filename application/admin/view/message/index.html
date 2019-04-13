@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+  <title>麒麟送子网</title>
+
+  <!-- Bootstrap -->
+  <link href="__ADMIN__css/bootstrap.min.css" rel="stylesheet">
+  <link href="__ADMIN__css/main.css" rel="stylesheet">
+
+  <!--[if lt IE 9]>
+      <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+    <![endif]-->
+</head>
+
+<body>
+  <div class="main">
+    {include file="public/left" /}
+    <div class="main-container">
+      {include file="public/top" /}
+      <div class="container-fluid">
+        <!--查询功能二期开放 <div class="tabel-bar">
+          <form class="navbar-form navbar-left">
+            <button type="button" id="addMessage" class="btn btn-info" data-toggle="modal" data-target="#addMessageModal">添加</button>
+          </form>
+        </div> -->
+        <!-- 修改留言 -->
+        <div class="modal fade" id="editMessageModal" tabindex="-1" role="dialog" aria-labelledby="editMessageModalLabel">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="editMessageModalLabel">修改留言</h4>
+              </div>
+              <div class="modal-body">
+                <form id="editMessageForm" class="form-horizontal">
+                  <input type="hidden" value="" name="id" id="messageId">
+                  <div class="form-group">
+                    <label for="contacts" class="col-sm-3 control-label">联系人</label>
+                    <div class="col-sm-8">
+                      <input type="text" name="contacts" class="form-control" id="contacts" value="" placeholder="联系人">
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label for="phone" class="col-sm-3 control-label">联系电话</label>
+                    <div class="col-sm-8">
+                      <input type="text" name="phone" class="form-control" id="phone" value="13012345678" placeholder="联系电话">
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label for="email" class="col-sm-3 control-label">邮箱</label>
+                    <div class="col-sm-8">
+                      <input type="text" name="email" class="form-control" id="email" value="" placeholder="邮箱">
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label for="weixin" class="col-sm-3 control-label">微信</label>
+                    <div class="col-sm-8">
+                      <input type="text" name="weixin" class="form-control" id="weixin" value="" placeholder="微信">
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label for="leaveContent" class="col-sm-3 control-label">内容</label>
+                    <div class="col-sm-8">
+                      <textarea class="form-control" name="leaveContent" id="leaveContent" rows="8" cols="80"></textarea>
+                    </div>
+                  </div>
+                  <p id="errorMessage" class="text-danger text-center" style="padding-top:10px;"></p>
+                </form>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                <button type="button" id="editMessageBtn" class="btn btn-primary">修改</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div id="content">
+          <div class="table-responsive text-center">
+            <table class="table table-bordered table-hover">
+              <thead>
+                <tr class="active">
+                  <th class="text-center">序号</th>
+                  <th class="text-center">留言时间</th>
+                  <th class="text-center" width="180">咨询内容</th>
+                  <th class="text-center">联系人</th>
+                  <th class="text-center">联系电话</th>
+                  <th class="text-center">邮箱</th>
+                  <th class="text-center">微信</th>
+                  <th class="text-center">留言IP</th>
+                  <th class="text-center" width="150">操作</th>
+                </tr>
+              </thead>
+              <tbody>
+                {volist name="messageres" id="message" key="k"}
+                <tr>
+                  <td>
+                    {if $Request.get.page} {$k+($Request.get.page-1)*10}
+                    {else /} {$k}
+                    {/if}
+                  </td>
+                  <td>{$message.leaveTime}</td>
+                  <td class="text-left">{$message.content}</td>
+                  <td>{$message.contacts}</td>
+                  <td>{$message.phone}</td>
+                  <td>{$message.email}</td>
+                  <td>{$message.weixin}</td>
+                  <td>{$message.leaveIp}</td>
+                  <td>
+                    <button type="button" class="edit-message btn btn-info" data-toggle="modal" data-id="{$message.id}" data-target="#editMessageModal">修改</button>
+                    <button type="button" data-id="{$message.id}" class="confirm btn btn-danger">删除</button>
+                  </td>
+                </tr>
+                {/volist}
+              </tbody>
+            </table>
+            {$messageres->render()}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal fade" id="myConfirm" tabindex="-1" role="dialog" aria-labelledby="myConfirmLabel">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" id="myModalLabel">确认框</h4>
+        </div>
+        <div class="modal-body">
+          <h3 class="text-center">删除留言将无法恢复，请再次确认</h3>
+          <input type="hidden" name="removeId" id="removeId">
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+          <button type="button" id="removeMessage" class="btn btn-primary">删除</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- jQuery (Bootstrap 的所有 JavaScript 插件都依赖 jQuery，所以必须放在前边) -->
+  <script src="__ADMIN__js/jquery.min.js"></script>
+  <!-- 加载 Bootstrap 的所有 JavaScript 插件。你也可以根据需要只加载单个插件。 -->
+  <script src="__ADMIN__js/bootstrap.min.js"></script>
+  <script src="__ADMIN__js/main.js"></script>
+</body>
+
+</html>
+<script>
+  $(function() {
+    // 询问删除
+    $('#content').on('click','.confirm',function(){
+      $('#removeId').val($(this).attr('data-id'));
+      $('#myConfirm').modal('toggle');
+    })
+    // 删除留言
+    $('#removeMessage').bind('click',function(){
+      $.ajax({
+        url:'/admin/message/removemessage',
+        type:'POST',
+        async:true,
+        data:{'removeId':$('#removeId').val()},
+        dataType:'json',
+        contentType:'application/x-www-form-urlencoded',
+        success: function(res){
+          let $res = JSON.parse(decodeURIComponent(res));
+          if($res['code'] == 0){  // 失败
+            tool.aMessage('error', $res['message']);
+          }else{  // 成功
+            $('#myConfirm').modal('hide');
+            if($res['code'] == 2){
+              tool.aMessage('error', $res['message'],'off');
+            }else{
+              tool.aMessage('success', $res['message']);
+            }
+          }
+        },
+        error: function(err){
+          console.log(err);
+        }
+      });
+    })
+
+
+    // 查询当前点击项
+    $('#content').on('click','.edit-message',function(){
+      let messageId = $(this).attr('data-id');
+      $.ajax({
+        url:'/admin/message/findmessage',
+        type:'POST',
+        async:true,
+        data:{'id':messageId},
+        dataType:'json',
+        contentType:'application/x-www-form-urlencoded',
+        success: function(res){
+          let $res = JSON.parse(decodeURIComponent(res));
+          $('#messageId').val($res['id']);
+          $('#phone').val($res['phone']);
+          $('#contacts').val($res['contacts']);
+          $('#email').val($res['email']);
+          $('#weixin').val($res['weixin']);
+          $('#leaveContent').text($res['content']);
+        },
+        error: function(err){
+          console.log(err);
+        }
+      });
+    })
+    // 修改留言
+    $('#editMessageBtn').bind('click', function() {
+      // if(!$('#phone').val()){
+      //   $('#errorMessage').html('请输入联系电话');
+      //   return;
+      // }
+      let postData  = $('#editMessageForm').serialize();
+      $.ajax({
+        url:'/admin/message/edit',
+        type:'POST',
+        async:true,
+        data:postData,
+        dataType:'json',
+        contentType:'application/x-www-form-urlencoded',
+        success: function(res){
+          let $res = JSON.parse(decodeURIComponent(res));
+          $('#editMessageModal').modal('hide');
+          if($res['code'] == 1){
+            tool.aMessage('success', $res['message']);
+          }else{
+            tool.aMessage('error', $res['message'],'off');
+          }
+
+        },
+        error: function(err){
+          console.log(err);
+        }
+      });
+    })
+
+  })
+</script>

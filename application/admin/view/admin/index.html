@@ -342,11 +342,11 @@
         contentType:'application/x-www-form-urlencoded',
         success: function(res){
           let $res = JSON.parse(decodeURIComponent(res));
+          $('#editModal').modal('hide');
+          console.log($res)
           if($res['code'] == 1){
-            $('#editModal').modal('hide');
             tool.aMessage('success', $res['message']);
           }else{
-            $('#editModal').modal('hide');
             tool.aMessage('error', $res['message']);
           }
 

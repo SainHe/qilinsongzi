@@ -16,11 +16,11 @@ class Login extends Controller
 		// 登录接口
 		$request = Request::instance();
 		if ($request->isPost()) {	// 判断是否post请求
-			$res = $admin->adminTxt(['userName'=>$request->post('username'),'passWord'=>md5($request->post('password'))]);
+			$res = $admin->adminFind(['userName'=>$request->post('username'),'passWord'=>md5($request->post('password'))]);
 			$adminId = $res['id'];
 			$loginNum = $res['loginNum']+1;
 			$userStatus = $res['userStatus'];
-			$admin->editAdmin($adminId,[
+			$admin->adminEdit($adminId,[
 				'loginNum' => $loginNum,
 				'lastIP' => $request->ip(),
 				'lastTime' => date('Y-n-j H:i:s'),

@@ -9,7 +9,7 @@ class category extends Common
 	{
 		// 栏目无限级分类
 		$category = new CategoryModel();
-		$res = $category->categoryGet();
+		$res = $category->catetree();
 		$this->assign('categoryres',$res);
 		return view();
 	}
@@ -84,11 +84,16 @@ class category extends Common
 		$category = new CategoryModel();
 		if ($request->isPost()) {
 			$categoryId = $request->post('removeId');
-			$res = $category->categoryremove($categoryId);
-			if($res){
-				return json_encode(['code'=>'1','message'=>'删除成功'],JSON_UNESCAPED_UNICODE);
+			$isHasChild = $category->categoryfind(['pid'=>$categoryId]);
+			if($isHasChild){
+				return json_encode(['code'=>'2','message'=>'请先删除子栏目'],JSON_UNESCAPED_UNICODE);
 			}else{
-				return json_encode(['code'=>'0','message'=>'删除失败'],JSON_UNESCAPED_UNICODE);
+				$res = $category->categoryremove($categoryId);
+				if($res){
+					return json_encode(['code'=>'1','message'=>'删除成功'],JSON_UNESCAPED_UNICODE);
+				}else{
+					return json_encode(['code'=>'0','message'=>'删除失败'],JSON_UNESCAPED_UNICODE);
+				}
 			}
 			return;
 		}

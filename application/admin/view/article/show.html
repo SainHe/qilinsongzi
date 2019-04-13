@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="keywords" content="{$data['keywords']}">
+  <meta name="description" content="{$data['des']}">
+  <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+  <title>{$data['title']}</title>
+
+  <!-- Bootstrap -->
+  <link href="__ADMIN__css/bootstrap.min.css" rel="stylesheet">
+  <link href="__ADMIN__css/main.css" rel="stylesheet">
+
+  <!--[if lt IE 9]>
+      <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+    <![endif]-->
+    <style>
+    .content { font-size: 16px; }
+    .content p {text-indent: 2em;}
+    </style>
+</head>
+
+<body>
+  <div class="main">
+    <!-- {$data['id']} -->
+    <h2 class="text-center">{$data['title']}</h2>
+    <p class="text-center">作者：{$data['auther']} 点击量：{$data['click']} 点赞数：{$data['zan']} 发布时间：{$data['time']}</p>
+    <div class="content container-fluid">{$data['content']}</div>
+
+  </div>
+
+  <!-- jQuery (Bootstrap 的所有 JavaScript 插件都依赖 jQuery，所以必须放在前边) -->
+  <script src="__ADMIN__js/jquery.min.js"></script>
+  <!-- 加载 Bootstrap 的所有 JavaScript 插件。你也可以根据需要只加载单个插件。 -->
+  <script src="__ADMIN__js/bootstrap.min.js"></script>
+  <script src="__ADMIN__js/main.js"></script>
+</body>
+
+</html>

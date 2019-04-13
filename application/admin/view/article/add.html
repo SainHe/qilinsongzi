@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+  <title>麒麟送子网</title>
+
+  <!-- Bootstrap -->
+  <link href="__ADMIN__css/bootstrap.min.css" rel="stylesheet">
+  <link href="__ADMIN__css/main.css" rel="stylesheet">
+
+  <!--[if lt IE 9]>
+      <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+    <![endif]-->
+
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+  <script type="text/javascript" charset="utf-8" src="__ADMIN__ueditor/ueditor.config.js"></script>
+  <script type="text/javascript" charset="utf-8" src="__ADMIN__ueditor/ueditor.all.min.js"> </script>
+  <script type="text/javascript" charset="utf-8" src="__ADMIN__ueditor/lang/zh-cn/zh-cn.js"></script>
+
+</head>
+
+<body>
+  <div class="main">
+    {include file="public/left" /}
+    <div class="main-container">
+      {include file="public/top" /}
+      <div class="container-fluid">
+        <div id="content">
+          <form class="form" id="addArticleForm">
+            <div class="form-group">
+              <label for="title">所属栏目</label>
+              <select class="form-control" name="cateId" id="cateId">
+                {volist name="categoryres" id="category"}
+                <option value="{$category.id}"><?php echo str_repeat('&nbsp;',$category['level']*4).'|—' ?>{$category.categoryName}</option>
+                {/volist}
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="title">标题</label>
+              <input type="text" value="" class="form-control" id="title" placeholder="标题">
+            </div>
+            <div class="form-group">
+              <label for="auther">作者</label>
+              <input type="text" value="" class="form-control" id="auther" placeholder="作者">
+            </div>
+            <div class="form-group">
+              <label for="keywords">关键词</label>
+              <input type="text" value="" class="form-control" id="keywords" placeholder="关键词">
+            </div>
+            <div class="form-group">
+              <label for="des">描述</label>
+              <textarea name="des" class="form-control" id="des" rows="3"></textarea>
+            </div>
+            <div class="form-group">
+              <label for="thumb">缩略图</label>
+              <input value="" type="file" id="thumb">
+            </div>
+            <div class="form-group">
+              <label for="deitor">文章内容</label>
+              <script id="editor" type="text/plain" style="width:100%;height:400px;"></script>
+            </div>
+            <button type="button" id="creatArticleBtn" class="btn btn-primary">发布</button>
+            <button type="button" id="creatArticleBtn02" class="btn btn-primary">发布并继续添加文章</button>
+            <button type="reset" id="clear" class="btn btn-btn-default">重置</button>
+            <br/><br/><br/>
+          </br/>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- jQuery (Bootstrap 的所有 JavaScript 插件都依赖 jQuery，所以必须放在前边) -->
+  <script src="__ADMIN__js/jquery.min.js"></script>
+  <!-- 加载 Bootstrap 的所有 JavaScript 插件。你也可以根据需要只加载单个插件。 -->
+  <script src="__ADMIN__js/bootstrap.min.js"></script>
+  <script src="__ADMIN__js/main.js"></script>
+</body>
+
+</html>
+<script>
+  $(function() {
+
+    var ue = UE.getEditor('editor');
+
+    $('#clear').click(()=>{
+      ue.setContent('');
+    })
+
+    function getContent() {
+        return UE.getEditor('editor').getContent();
+    }
+
+    function setContent(isAppendTo) {
+        UE.getEditor('editor').setContent(isAppendTo);
+    }
+
+    // 创建文章
+    $('#creatArticleBtn').bind('click', function() {
+      creatArticle('/admin/article/index');
+    })
+    $('#creatArticleBtn02').bind('click', function() {
+      creatArticle('/admin/article/add');
+    })
+
+    function creatArticle(reUrl){
+      // if(!$('#title').val()){
+      //   $('#errorMessage').html('请输入标题');
+      //   return;
+      // }
+      let $cateId = $('#cateId').val(),
+          $title = $('#title').val(),
+          $auther = $('#auther').val(),
+          $keywords = $('#keywords').val(),
+          $des = $('#des').val(),
+          $thumb = $('#thumb').val(),
+          $content = getContent();
+      let postData = {'cateId':$cateId,'title':$title,'auther':$auther,'keywords':$keywords,'des':$des,'thumb':$thumb,'content':$content};
+      $.ajax({
+        url: '/admin/article/addarticle',
+        type: 'POST',
+        async: true,
+        data: postData,
+        dataType: 'json',
+        contentType: 'application/x-www-form-urlencoded',
+        success: function(res) {
+          let $res = JSON.parse(decodeURIComponent(res));
+          if ($res['code'] == 1) {
+            tool.aMessage('success', $res['message'],reUrl);
+          } else {
+            tool.aMessage('error', $res['message'], 'off');
+          }
+        }
+      });
+    }
+
+  })
+</script>

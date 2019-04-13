@@ -24,4 +24,19 @@ class Category extends Model
 	public function categoryEdit($cateId,$data){
 		return $this::where('id',$cateId)->update($data);
 	}
+	public function catetree(){
+		$cateres=$this->select();
+		return $this->sort($cateres);
+	}
+	public function sort($data,$pid=0,$level=1){
+		static $arr = array();
+		foreach ($data as $key => $value) {
+			if($value['pid']==$pid){
+				$value['level']=$level;
+				$arr[]=$value;
+				$this->sort($data,$value['id'],$level+1);
+			}
+		}
+		return $arr;
+	}
 }

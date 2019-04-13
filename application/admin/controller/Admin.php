@@ -80,16 +80,21 @@ class Admin extends Common
 			$userStatus = $request->post('status');
 			if($request->post('password')){
 				$passWord = md5($request->post('password'));
-				$admin->adminedit($adminId,['passWord'=>$passWord]);
+				$res = $admin->adminedit($adminId,[
+					'passWord'=>$passWord,
+					'nickName' => $nickName,
+					'userStatus' => $userStatus,
+				]);
+			}else{
+				$res = $admin->adminedit($adminId,[
+					'nickName' => $nickName,
+					'userStatus' => $userStatus,
+				]);
 			}
-			$res = $admin->adminedit($adminId,[
-				'nickName' => $nickName,
-				'userStatus' => $userStatus,
-			]);
 			if($res){
 				return json_encode(['code'=>'1','message'=>'修改成功'],JSON_UNESCAPED_UNICODE);
 			}else{
-				return json_encode(['code'=>'0','message'=>'修改失败'],JSON_UNESCAPED_UNICODE);
+				return json_encode(['code'=>'0','message'=>'修改失败，未做任何修改'],JSON_UNESCAPED_UNICODE);
 			}
 			return;
 		}
