@@ -19,8 +19,8 @@
       <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
     <![endif]-->
     <style>
-    .content { font-size: 16px; }
-    .content p {text-indent: 2em;}
+    .content { font-size: 16px;text-align: center; }
+    .content p {text-indent: 2em; text-align: left;}
     </style>
 </head>
 
@@ -29,7 +29,12 @@
     <!-- {$data['id']} -->
     <h2 class="text-center">{$data['title']}</h2>
     <p class="text-center">作者：{$data['auther']} 点击量：{$data['click']} 点赞数：{$data['zan']} 发布时间：{$data['time']}</p>
-    <div class="content container-fluid">{$data['content']}</div>
+    <div class="content container-fluid">
+      {if condition="$imgUrl['url']"}
+      <img src="{$imgUrl['url']}" alt="">
+      {/if}
+      {$data['content']}
+    </div>
 
   </div>
 

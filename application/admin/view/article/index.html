@@ -46,17 +46,21 @@
                 </tr>
               </thead>
               <tbody>
-                {volist name="articleres" id="article"}
+                {volist name="articleres" id="article" key="k"}
                 <tr>
-                  <td>{$article.id}</td>
-                  <td>{$article.cateId}</td>
+                  <td>
+                    {if $Request.get.page} {$k+($Request.get.page-1)*10}
+                    {else /} {$k}
+                    {/if}
+                  </td>
+                  <td>{$article.parentName}</td>
                   <td><a target="_blank" href="/admin/article/show/id/{$article.id}">{$article.title}</a></td>
                   <td>{$article.auther}</td>
                   <td>{$article.click}</td>
                   <td>{$article.zan}</td>
                   <td>{$article.time}</td>
                   <td>
-                    <button type="button" class="edit-message btn btn-info" data-toggle="modal" data-id="{$article.id}" data-target="#editMessageModal">修改</button>
+                    <a href="/admin/article/edit/id/{$article.id}/pid/{$article.cateId}" class="edit-message btn btn-info">修改</a>
                     <button type="button" data-id="{$article.id}" class="confirm btn btn-danger">删除</button>
                   </td>
                 </tr>
@@ -77,12 +81,12 @@
           <h4 class="modal-title" id="myModalLabel">确认框</h4>
         </div>
         <div class="modal-body">
-          <h3 class="text-center">删除留言将无法恢复，请再次确认</h3>
+          <h3 class="text-center">删除文章将无法恢复，请再次确认</h3>
           <input type="hidden" name="removeId" id="removeId">
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-          <button type="button" id="removeMessage" class="btn btn-primary">删除</button>
+          <button type="button" id="removeArticle" class="btn btn-primary">删除</button>
         </div>
       </div>
     </div>
@@ -104,9 +108,9 @@
       $('#myConfirm').modal('toggle');
     })
     // 删除留言
-    $('#removeMessage').bind('click',function(){
+    $('#removeArticle').bind('click',function(){
       $.ajax({
-        url:'/admin/message/removemessage',
+        url:'/admin/article/removearticle',
         type:'POST',
         async:true,
         data:{'removeId':$('#removeId').val()},
@@ -118,11 +122,7 @@
             tool.aMessage('error', $res['message']);
           }else{  // 成功
             $('#myConfirm').modal('hide');
-            if($res['code'] == 2){
-              tool.aMessage('error', $res['message'],'off');
-            }else{
-              tool.aMessage('success', $res['message']);
-            }
+            tool.aMessage('success', $res['message']);
           }
         },
         error: function(err){

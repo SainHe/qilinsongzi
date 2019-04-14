@@ -11,6 +11,7 @@ class category extends Common
 		$category = new CategoryModel();
 		$res = $category->catetree();
 		$this->assign('categoryres',$res);
+		// return json_encode($res,JSON_UNESCAPED_UNICODE);
 		return view();
 	}
 

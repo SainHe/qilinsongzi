@@ -28,11 +28,12 @@ class Category extends Model
 		$cateres=$this->select();
 		return $this->sort($cateres);
 	}
-	public function sort($data,$pid=0,$level=1){
+	public function sort($data,$pid=0,$level=1,$parentName='根目录'){
 		static $arr = array();
 		foreach ($data as $key => $value) {
 			if($value['pid']==$pid){
 				$value['level']=$level;
+				$value['parentName']=$this::where('id',$value['pid'])->field('categoryName')->find()['categoryName'];
 				$arr[]=$value;
 				$this->sort($data,$value['id'],$level+1);
 			}

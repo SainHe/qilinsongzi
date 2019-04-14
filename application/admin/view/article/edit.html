@@ -42,29 +42,31 @@
             </div>
             <div class="form-group">
               <label for="title">标题</label>
-              <input type="text" name="title" class="form-control" id="title" placeholder="标题">
+              <input type="text" value="{$articleres.title}" name="title" class="form-control" id="title" placeholder="标题">
               <div class="text-danger bg-danger" style="display:none; line-height:30px;" id="titleMessage"></div>
             </div>
             <div class="form-group">
               <label for="auther">作者</label>
-              <input type="text" name="auther" class="form-control" id="auther" placeholder="作者">
+              <input type="text" value="{$articleres.auther}" name="auther" class="form-control" id="auther" placeholder="作者">
             </div>
             <div class="form-group">
               <label for="keywords">关键词</label>
-              <input type="text" name="keywords" class="form-control" id="keywords" placeholder="关键词">
+              <input type="text" value="{$articleres.keywords}" name="keywords" class="form-control" id="keywords" placeholder="关键词">
             </div>
             <div class="form-group">
               <label for="des">描述</label>
-              <textarea name="des" class="form-control" id="des" rows="3"></textarea>
+              <textarea name="des" class="form-control" id="des" rows="3">{$articleres.des}</textarea>
             </div>
             <div class="form-group" id="thumbBox">
               <label for="thumb">缩略图</label>
               <input name="thumb[]" type="file" id="thumb">
               <p class="text-danger" style="padding-top:10px;" id="thumbText"></p>
-              <div id="thumbImg" style="display:none;">
-                <img style="" width="160" height="160" src="" alt="">
-                <a id="imgId" data-id="" href="javascript:void(0)">删除</a>
+              {if condition="$imageres.url"}
+              <div id="thumbImg">
+                <img style="" width="160" height="160" src="{$imageres.url}" alt="">
+                <a id="imgId" data-id="{$imageres.id}" href="javascript:void(0)">删除</a>
               </div>
+              {/if}
             </div>
           </form>
             <div class="form-group">
@@ -72,8 +74,7 @@
               <script id="editor" type="text/plain" style="width:100%;height:400px;"></script>
               <div class="text-danger bg-danger" style="display:none; line-height:30px;" id="conMessage"></div>
             </div>
-            <button type="button" id="creatArticleBtn" class="btn btn-primary">发布</button>
-            <button type="button" id="creatArticleBtn02" class="btn btn-primary">发布并继续添加文章</button>
+            <button type="button" id="editArticleBtn" class="btn btn-primary">修改</button>
             <button type="reset" id="clear" class="btn btn-btn-default">重置</button>
             <br/><br/><br/></br/>
         </div>
@@ -90,6 +91,7 @@
 </html>
 <script>
   $(function() {
+    $('#cateId').find('option[value={$Request.param.pid}]').attr('selected',true);
     // 图片上传
     $('#thumb').bind('change',function(){
       let animateimg = $("#thumb").val(); //获取上传的图片名 带//
@@ -158,14 +160,15 @@
     $('#clear').click(()=>{
       ue.setContent('');
     })
+    ue.ready(function() {
+        //默认显示内容
+        ue.setContent('{$articleres.content}');
+    });
 
     function getContent() {
         return UE.getEditor('editor').getContent();
     }
 
-    function setContent(isAppendTo) {
-        UE.getEditor('editor').setContent(isAppendTo);
-    }
 
     // 创建文章
     $('#creatArticleBtn').bind('click', function() {

@@ -124,8 +124,20 @@
                 <tr>
                   <td>{$category.id}</td>
                   <td class="text-left"><?php echo str_repeat('——',$category['level']-1) ?>{$category.categoryName}</td>
-                  <td>{$category.type}</td>
-                  <td>{$category.pid}</td>
+                  <td>
+                    {if condition="$category.type==1"}
+                      列表
+                    {else /}
+                      单页
+                    {/if}
+                  </td>
+                  <td>
+                    {if condition="$category.parentName"}
+                      {$category.parentName}
+                    {else /}
+                      根目录
+                    {/if}
+                  </td>
                   <td>{$category.creatUser}</td>
                   <td>{$category.creatTime}</td>
                   <td>{$category.visit}</td>

@@ -11,6 +11,7 @@ class Article extends Common
 		// 文章列表
 		$article = new ArticleModel();
 		$res = $article->articleget();
+		// return json_encode($res,JSON_UNESCAPED_UNICODE);
 		$this->assign('articleres',$res);
 		return view();
 	}
@@ -24,10 +25,14 @@ class Article extends Common
 	}
 	public function show()
 	{
+		// 查看文章
 		$articleId = input('id');
 		$article = new ArticleModel();
 		$data = $article->articleFind(['id'=>$articleId]);	//链接数据库
+		$imgUrl = db('thumb')->where('pid',$data['id'])->find();
+
 		$this->assign('data', $data);
+		$this->assign('imgUrl', $imgUrl);
 		return view();
 	}
 	public function addarticle()
@@ -35,6 +40,7 @@ class Article extends Common
 		// 添加文章请求方法
 		$request = Request::instance();
 		$article = new ArticleModel();
+
 		if ($request->isPost()) {
 			$data = [
 				'title' => input('post.title'),
@@ -42,19 +48,55 @@ class Article extends Common
 	      'des' => input('post.des'),
 	      'auther' => input('post.auther'),
 	      'content' => input('post.content'),
-	      'thumb' => input('post.thumb'),
 				'click' => 0,
 				'zan' => 0,
 				'time' => date('Y-n-j H:i:s'),
 				'cateId' => input('post.cateId'),
 			];
 			$res = $article->articleAdd($data);
+			if(input('post.imgId')){
+				$imgId = input('post.imgId');
+				db('thumb')->where(['id'=>$imgId])->update(['pid' => $res]);
+			}
 			// return json_encode($res,JSON_UNESCAPED_UNICODE);
 			if($res){
 				return json_encode(['code'=>'1','message'=>'添加成功'],JSON_UNESCAPED_UNICODE);
 			}else{
 				return json_encode(['code'=>'0','message'=>'添加失败'],JSON_UNESCAPED_UNICODE);
 			}
+		}
+	}
+	public function uploadimg()
+	{
+		$files = request()->file('thumb');
+
+		foreach($files as $file){
+      // 移动到框架应用根目录/public/uploads/ 目录下
+      $info = $file->validate(['ext'=>'jpg,png,gif'])->move(ROOT_PATH . 'public' . DS . 'uploads');
+      if($info){
+        // 成功上传后 获取上传信息
+        $getSaveName=str_replace("\\","/",$info->getSaveName());
+        $thumb = '/uploads/' . $getSaveName;
+      }
+    }
+		$res = db('thumb')->insertGetId(['url'=>$thumb]);
+		$resp = db('thumb')->where(['id'=>$res])->find();
+		if($res){
+			$thumbId = $resp['id'];
+			$thumbUrl = $resp['url'];
+			return json_encode(['code'=>'1','message'=>'上传成功','thumbId'=>$thumbId,'thumbUrl'=>$thumbUrl],JSON_UNESCAPED_UNICODE);
+		}else{
+			return json_encode(['code'=>'0','message'=>'上传失败'],JSON_UNESCAPED_UNICODE);
+		}
+	}
+	public function deleteimg()
+	{
+		$delId = input('post.delId');
+		$res = db('thumb')->where('id',$delId)->delete();
+		if($res){
+			return json_encode(['code'=>'1','message'=>'删除成功'],JSON_UNESCAPED_UNICODE);
+		}else{
+			return json_encode(['code'=>'0','message'=>'删除失败'],JSON_UNESCAPED_UNICODE);
 		}
 	}
 
@@ -73,9 +115,22 @@ class Article extends Common
 
 	public function edit()
 	{
-		// 修改留言
+		// 修改文章
+		// 栏目列表
+		$category = new CategoryModel();
+		$res = $category->catetree();
+		$this->assign('categoryres',$res);
+		// 文章内容
 		$request = Request::instance();
 		$article = new ArticleModel();
+		$articleres = $article->articleFind(['id'=>input('id')]);
+		$this->assign('articleres',$articleres);
+
+		// 图片内容
+		$imageres = db('thumb')->where(['pid'=>input('id')])->find();
+		$this->assign('imageres',$imageres);
+
+		return view();
 		if ($request->isPost()) {
 			$articleId = $request->post('id');
 			$contacts = $request->post('contacts');
@@ -101,12 +156,13 @@ class Article extends Common
 		}
 	}
 	public function removearticle(){
-		// 删除留言
+		// 删除文章
 		$request = Request::instance();
 		$article = new ArticleModel();
 		if ($request->isPost()) {
 			$articleId = $request->post('removeId');
 			$res = $article->articleremove($articleId);
+			db('thumb')->where('pid',$articleId)->delete();
 			if($res){
 				return json_encode(['code'=>'1','message'=>'删除成功'],JSON_UNESCAPED_UNICODE);
 			}else{
