@@ -40,6 +40,7 @@
                 {/volist}
               </select>
             </div>
+            <input type="hidden" name="pid" value="{$Request.param.id}">
             <div class="form-group">
               <label for="title">标题</label>
               <input type="text" value="{$articleres.title}" name="title" class="form-control" id="title" placeholder="标题">
@@ -61,12 +62,12 @@
               <label for="thumb">缩略图</label>
               <input name="thumb[]" type="file" id="thumb">
               <p class="text-danger" style="padding-top:10px;" id="thumbText"></p>
-              {if condition="$imageres.url"}
-              <div id="thumbImg">
+
+              <div id="thumbImg" {if condition="!$imageres.url"}style="display:none;"{/if}>
                 <img style="" width="160" height="160" src="{$imageres.url}" alt="">
                 <a id="imgId" data-id="{$imageres.id}" href="javascript:void(0)">删除</a>
               </div>
-              {/if}
+
             </div>
           </form>
             <div class="form-group">
@@ -75,7 +76,6 @@
               <div class="text-danger bg-danger" style="display:none; line-height:30px;" id="conMessage"></div>
             </div>
             <button type="button" id="editArticleBtn" class="btn btn-primary">修改</button>
-            <button type="reset" id="clear" class="btn btn-btn-default">重置</button>
             <br/><br/><br/></br/>
         </div>
       </div>
@@ -92,6 +92,7 @@
 <script>
   $(function() {
     $('#cateId').find('option[value={$Request.param.pid}]').attr('selected',true);
+
     // 图片上传
     $('#thumb').bind('change',function(){
       let animateimg = $("#thumb").val(); //获取上传的图片名 带//
@@ -127,6 +128,7 @@
           if($res['code']==1){
             $('#thumbImg').show().find('img').eq(0).attr('src',$res['thumbUrl']);
             $('#imgId').attr('data-id',$res['thumbId']);
+            tool.aMessage('success', $res['message'], 'off');
           }
         });
         return false;
@@ -134,7 +136,7 @@
     })
 
     $('#imgId').bind('click',function(){
-
+      // 删除已上传图片
       $.ajax({
         url: '/admin/article/deleteimg',
         type: 'POST',
@@ -157,12 +159,9 @@
 
     let ue = UE.getEditor('editor');
 
-    $('#clear').click(()=>{
-      ue.setContent('');
-    })
     ue.ready(function() {
         //默认显示内容
-        ue.setContent('{$articleres.content}');
+        ue.setContent(`<pre>{$articleres.content}</pre>`);
     });
 
     function getContent() {
@@ -170,12 +169,9 @@
     }
 
 
-    // 创建文章
-    $('#creatArticleBtn').bind('click', function() {
+    // 修改文章
+    $('#editArticleBtn').bind('click', function() {
       creatArticle('/admin/article/index');
-    })
-    $('#creatArticleBtn02').bind('click', function() {
-      creatArticle('/admin/article/add');
     })
 
     function creatArticle(reUrl){
@@ -191,15 +187,15 @@
       $('#titleMessage').hide();
       $('#conMessage').hide();
       let $cateId = $('#cateId').val(),
+          $articleId = {$Request.param.id},
           $title = $('#title').val(),
           $auther = $('#auther').val(),
           $keywords = $('#keywords').val(),
           $des = $('#des').val(),
-          $content = getContent(),
-          $imgId = $('#imgId').attr('data-id');
-      let postData = {'cateId':$cateId,'title':$title,'auther':$auther,'keywords':$keywords,'des':$des,'content':$content,'imgId':$imgId};
+          $content = getContent();
+      let postData = {'cateId':$cateId,'articleId':$articleId,'title':$title,'auther':$auther,'keywords':$keywords,'des':$des,'content':$content};
       $.ajax({
-        url: '/admin/article/addarticle',
+        url: '/admin/article/editarticle',
         type: 'POST',
         async: true,
         data: postData,

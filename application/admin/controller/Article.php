@@ -69,7 +69,12 @@ class Article extends Common
 	public function uploadimg()
 	{
 		$files = request()->file('thumb');
-
+		if(input('pid')){
+			$pid = input('pid');
+		}else{
+			$pid = '';
+		}
+		db('thumb')->where(['pid'=>$pid])->delete();	// 上传覆盖
 		foreach($files as $file){
       // 移动到框架应用根目录/public/uploads/ 目录下
       $info = $file->validate(['ext'=>'jpg,png,gif'])->move(ROOT_PATH . 'public' . DS . 'uploads');
@@ -79,7 +84,7 @@ class Article extends Common
         $thumb = '/uploads/' . $getSaveName;
       }
     }
-		$res = db('thumb')->insertGetId(['url'=>$thumb]);
+		$res = db('thumb')->insertGetId(['url'=>$thumb,'pid'=>$pid]);
 		$resp = db('thumb')->where(['id'=>$res])->find();
 		if($res){
 			$thumbId = $resp['id'];
@@ -115,38 +120,47 @@ class Article extends Common
 
 	public function edit()
 	{
-		// 修改文章
-		// 栏目列表
+		// 获取栏目列表
 		$category = new CategoryModel();
 		$res = $category->catetree();
 		$this->assign('categoryres',$res);
-		// 文章内容
+		// 获取文章内容
 		$request = Request::instance();
 		$article = new ArticleModel();
 		$articleres = $article->articleFind(['id'=>input('id')]);
 		$this->assign('articleres',$articleres);
 
-		// 图片内容
+		// 获取图片内容
 		$imageres = db('thumb')->where(['pid'=>input('id')])->find();
 		$this->assign('imageres',$imageres);
 
 		return view();
+
+	}
+	public function editarticle()
+	{
+		// 修改文章
+		$request = Request::instance();
+		$article = new ArticleModel();
 		if ($request->isPost()) {
-			$articleId = $request->post('id');
-			$contacts = $request->post('contacts');
-			$phone = $request->post('phone');
-			$email = $request->post('email');
-			$weixin = $request->post('weixin');
-			$leaveContent = $request->post('leaveContent');
+			$cateId = $request->post('cateId');
+			$articleId = $request->post('articleId');
+			$title = $request->post('title');
+			$auther = $request->post('auther');
+			$keywords = $request->post('keywords');
+			$des = $request->post('des');
+			$content = $request->post('content');
 
+			$data = [
+				'cateId' => $cateId,
+				'title' => $title,
+				'auther' => $auther,
+				'keywords' => $keywords,
+				'des' => $des,
+				'content' => $content,
+			];
 
-			$res = $article->articleedit($articleId,[
-				'contacts' => $contacts,
-				'phone' => $phone,
-				'email' => $email,
-				'weixin' => $weixin,
-				'content' => $leaveContent,
-			]);
+			$res = $article->articleedit($articleId,$data);
 			if($res){
 				return json_encode(['code'=>'1','message'=>'修改成功'],JSON_UNESCAPED_UNICODE);
 			}else{
@@ -155,7 +169,8 @@ class Article extends Common
 			return;
 		}
 	}
-	public function removearticle(){
+	public function removearticle()
+	{
 		// 删除文章
 		$request = Request::instance();
 		$article = new ArticleModel();

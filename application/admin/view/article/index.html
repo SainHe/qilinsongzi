@@ -24,11 +24,18 @@
     <div class="main-container">
       {include file="public/top" /}
       <div class="container-fluid">
-        <!--查询功能二期开放 <div class="tabel-bar">
+        <div class="tabel-bar">
           <form class="navbar-form navbar-left">
-            <button type="button" id="addMessage" class="btn btn-info" data-toggle="modal" data-target="#addMessageModal">添加</button>
+            <div class="form-group">
+              <input type="text" class="form-control" placeholder="标题">
+            </div>
+            <select name="cate" class="form-control" id="cate">
+              <option value="1">全部</option>
+            </select>
+            <button type="button" id="search" class="btn btn-info">搜索</button>
+            <a id="add" style="padding-left:40px;" class="btn btn-info" href="/admin/article/add">添加文章</a>
           </form>
-        </div> -->
+        </div>
 
         <div id="content">
           <div class="table-responsive text-center">
@@ -60,7 +67,7 @@
                   <td>{$article.zan}</td>
                   <td>{$article.time}</td>
                   <td>
-                    <a href="/admin/article/edit/id/{$article.id}/pid/{$article.cateId}" class="edit-message btn btn-info">修改</a>
+                    <a href="/admin/article/edit/id/{$article.id}/pid/{$article.cateId}" class="btn btn-info">修改</a>
                     <button type="button" data-id="{$article.id}" class="confirm btn btn-danger">删除</button>
                   </td>
                 </tr>
@@ -124,61 +131,6 @@
             $('#myConfirm').modal('hide');
             tool.aMessage('success', $res['message']);
           }
-        },
-        error: function(err){
-          console.log(err);
-        }
-      });
-    })
-
-
-    // 查询当前点击项
-    $('#content').on('click','.edit-message',function(){
-      let messageId = $(this).attr('data-id');
-      $.ajax({
-        url:'/admin/message/findmessage',
-        type:'POST',
-        async:true,
-        data:{'id':messageId},
-        dataType:'json',
-        contentType:'application/x-www-form-urlencoded',
-        success: function(res){
-          let $res = JSON.parse(decodeURIComponent(res));
-          $('#messageId').val($res['id']);
-          $('#phone').val($res['phone']);
-          $('#contacts').val($res['contacts']);
-          $('#email').val($res['email']);
-          $('#weixin').val($res['weixin']);
-          $('#leaveContent').text($res['content']);
-        },
-        error: function(err){
-          console.log(err);
-        }
-      });
-    })
-    // 修改留言
-    $('#editMessageBtn').bind('click', function() {
-      // if(!$('#phone').val()){
-      //   $('#errorMessage').html('请输入联系电话');
-      //   return;
-      // }
-      let postData  = $('#editMessageForm').serialize();
-      $.ajax({
-        url:'/admin/message/edit',
-        type:'POST',
-        async:true,
-        data:postData,
-        dataType:'json',
-        contentType:'application/x-www-form-urlencoded',
-        success: function(res){
-          let $res = JSON.parse(decodeURIComponent(res));
-          $('#editMessageModal').modal('hide');
-          if($res['code'] == 1){
-            tool.aMessage('success', $res['message']);
-          }else{
-            tool.aMessage('error', $res['message'],'off');
-          }
-
         },
         error: function(err){
           console.log(err);
